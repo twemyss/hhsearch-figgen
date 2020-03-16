@@ -103,3 +103,13 @@ The program can generate two types of figures. One has all the hits shown below 
 ##### 6: Colours
 
 Colours defines the colours to use in the profile HMM bitscore plots. It should typically not be changed - the current theme is based on the ClustalX colour scheme.
+
+## Running the figure generation scripts
+
+Running the figure generation scripts is as simple as running the following:
+
+```
+python3 hhsearch-figgen.py test-data/kkt17.json
+```
+
+Replace the last argument with your JSON configuration file.
