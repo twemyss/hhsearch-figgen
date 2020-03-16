@@ -1,11 +1,11 @@
 {
   "master": {
     "name": "KKT 17",
-    "hmm_file": "OG0002279.fa.hmm.ss.hmm"
+    "hmm_file": "test-data/OG0002279.fa.hmm.ss.hmm"
   },
   "searches": {
-    "pfam": "search_KKT 17_pfam.txt",
-    "hits": "search_KKT 17_euglena.ogs.txt"
+    "pfam": "test-data/search_KKT 17_pfam.txt",
+    "hits": "test-data/search_KKT 17_euglena.ogs.txt"
   },
   "domains":[
     {
