@@ -71,12 +71,16 @@ It is rare to want to include all of the PFAM domains - many overlap and/or migh
 
 You should examine the hits file, and then choose the hit numbers of the domains that you wish to show on the figure.
 
-This configuration section holds a JSON array of each domain you wish to include
+This configuration section holds a JSON array of each domain you wish to include.
+
+Each individual domain is a JSON object structured like the following:
 
 ```
-"pfam_hit_number": [4, 5],
-"name": "Coiled-Coil",
-"colour": [0.9, 0.1, 0.1, 0.5]
+{
+    "pfam_hit_number": [4, 5],
+    "name": "Coiled-Coil",
+    "colour": [0.9, 0.1, 0.1, 0.5]
+}
 ```
 
 In this example, hits number 4 and 5 would be labelled as "Coiled-Coil" and shown in a semi-transparent red colour.
