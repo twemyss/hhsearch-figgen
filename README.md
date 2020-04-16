@@ -100,9 +100,11 @@ The second two parameters, `padding_left` and `padding_top`, set where the maste
 
 `max_hits` is the maximum number of hits to show on each page./
 
-`cutoff` is the E-value cutoff for hits to be shown in green (rather than grey)
+`cutoff` is the E-value cutoff for hits to be shown in green (rather than grey). Omit this to use a linear scaling from red (E=1) to green (E=0)
 
 The program can generate two types of figures. One has all the hits shown below the master ("normal view"), and the other has hits that hit before a certain amino acid position on the master above the master, and those that hit after that amino acid position below the master. This is called "split view", and can be enabled by setting the parameters `split` and `split_at`. The first is a boolean, false for normal and true for split. The second is the position threshold for the start of the hit. 
+
+`subplot_type` can be "logo", for logo plots of the hits, "secondary" for a moving average secondary structure, or "psiplot" for a colour coded bar chart of secondary structure.
 
 ##### 6: Colours
 
