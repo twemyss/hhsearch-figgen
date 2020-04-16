@@ -1,7 +1,8 @@
 {
   "master": {
     "name": "KKT 17",
-    "hmm_file": "test-data/OG0002279.fa.hmm.ss.hmm"
+    "hmm_file": "test-data/OG0002279.fa.hmm.ss.hmm",
+    "alignment_a3m": "test-data/OG0002279.fa.a3m"
   },
   "searches": {
     "pfam": "test-data/search_KKT 17_pfam.txt",
@@ -25,17 +26,23 @@
     }
   ],
   "page": {
-    "horizontal_padding": 500,
-    "height": 2000,
-    "padding_left": 150,
-    "padding_top": 1000
+    "horizontal_padding": 1000,
+    "height": 4000,
+    "padding_left": 180,
+    "padding_top": 200
   },
   "output": {
     "file_name": "kkt17.pdf",
-    "max_hits": 8,
-    "cutoff": 0.0001,
-    "split": true,
-    "split_at": 500
+    "max_hits": 30,
+    "split": false,
+    "split_at": 500,
+    "subplot_type": "psiplot",
+    "conservation_plot": {
+      "type": "traditional",
+      "args": {
+        "letter_height": "info_content_above"
+      }
+    }
   },
   "colours": [
     {
