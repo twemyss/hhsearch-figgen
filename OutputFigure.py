@@ -23,7 +23,7 @@ class OutputFigure:
     config = None
     parsed_hmm_master = None
 
-    def __init__(self, config):
+    def __init__(self, config, add_hits):
         # Load the HMM
         self.parsed_hmm_master = ParsedHMM.ParsedHMM(config)
         # Store the config and HMM
@@ -37,8 +37,9 @@ class OutputFigure:
         self.cr = cairo.Context(surface)
         # Draw the master sequence
         self.draw_master_sequence()
-        # Add the extra hits
-        self.add_hits()
+        if add_hits:
+            # Add the extra hits
+            self.add_hits()
         # Save the file
         self.save_file()
 
@@ -75,16 +76,21 @@ class OutputFigure:
         self.cr.rotate(-math.pi / 2)
 
         # Plot the clustal plot on top
-        for i in range(len(hmm.probs)):
+        for i in range(len(hmm.clustal_colours)):
             height_offset = 0
             for j in range(len(self.config['colours'])):
                 # Calculate colour
-                if np.sum(hmm.clustal_colours[i]) > 1.5:
-                    col = list(colorsys.rgb_to_hsv(self.config['colours'][j]['rgb'][0], self.config['colours'][j]['rgb'][1],
-                                           self.config['colours'][j]['rgb'][2]))
-                    col[1] = (np.divide(np.sum(hmm.clustal_colours[i]), (np.max(hmm.height_array))))
+                if self.config['output']['conservation_plot']['type'] == 'skylign':
+                    col = list(
+                        colorsys.rgb_to_hsv(self.config['colours'][j]['rgb'][0], self.config['colours'][j]['rgb'][1],
+                                            self.config['colours'][j]['rgb'][2]))
                 else:
-                    col = [0, 0, 0.8]
+                    if np.sum(hmm.clustal_colours[i]) > 1.5:
+                        col = list(colorsys.rgb_to_hsv(self.config['colours'][j]['rgb'][0], self.config['colours'][j]['rgb'][1],
+                                               self.config['colours'][j]['rgb'][2]))
+                        col[1] = (np.divide(np.sum(hmm.clustal_colours[i]), (np.max(hmm.height_array))))
+                    else:
+                        col = [0, 0, 0.8]
 
                 col = colorsys.hsv_to_rgb(col[0], col[1], col[2])
                 self.cr.set_source_rgb(col[0], col[1], col[2])
@@ -239,10 +245,10 @@ class OutputFigure:
             # Look for start and end position of each hit
             for counter in range(2, self.config['output']['max_hits'] + 1):
                 print("--- Starting new OG ---")
-                print(e_value_array)
-                print(rankdata(np.array(e_value_array), 'ordinal'))
+                #print(e_value_array)
+                #print(rankdata(np.array(e_value_array), 'ordinal'))
                 hit_group_in_file = int(np.where(rankdata(np.array(e_value_array), 'ordinal') == counter - 1)[0] + 2)
-                print(hit_group_in_file)
+                #print(hit_group_in_file)
 
 
                 for line in lines:
@@ -432,7 +438,7 @@ class OutputFigure:
         max_bitscore = 9
         offset_horizontal = pos_x
         position = pos_y
-        print(list(set(hmm.ss)))
+        #print(list(set(hmm.ss)))
         scale = 3
         # Draw axes
         self.cr.set_source_rgb(0, 0, 0)
@@ -465,7 +471,7 @@ class OutputFigure:
         self.cr.show_text("SS Conf.")
         self.cr.rotate(-math.pi / 2)
 
-        print(hmm.ss_probs)
+        #print(hmm.ss_probs)
 
         # Plot the clustal plot on top
         for i in range(len(hmm.probs)):

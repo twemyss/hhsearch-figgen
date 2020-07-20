@@ -3,6 +3,7 @@
 import math
 import requests
 import numpy as np
+import json
 
 class ParsedHMM:
     """ Represents a parsed HMM file
@@ -125,20 +126,46 @@ class ParsedHMM:
                             if aa_prob > self.nulls[j]:
                                 heights[k] += aa_prob * height
                 self.clustal_colours.append(heights)
-            print("Heights:")
-            print(self.height_array)
-            print("Max height:")
-            print(np.amax(self.height_array))
-            print("Background:")
-            print(self.nulls)
-            print(np.sum(self.nulls))
+            #print("Heights:")
+            #print(self.height_array)
+            #print("Max height:")
+            #print(np.amax(self.height_array))
+            #print("Background:")
+            #print(self.nulls)
+            #print(np.sum(self.nulls))
         elif config['output']['conservation_plot']['type'] == 'skylign':
-            # Get the HMM file and send it to skylign via post, using arguments
+            # Get the HMM file and send it to skylign via post
             print("Making request")
             r = requests.post('http://skylign.org/',
-                              params={'file': open(config['master']['alignment_a3m'], 'r')},
-                              headers={"Accept": "Application/json"}, timeout=5)
-            print(r.text)
+                              files = {
+                                  'file': ('hmm.a3m', open(config['master']['alignment_a3m'], 'rb')),
+                                  'processing': (None, 'hmm'),
+                                  'path': (None, '/'),
+                                  'letter_height': (None, 'info_content_above')
+                              },
+                              headers={"Accept": "application/json"}, timeout=5)
+            # Now retrieve the heights from skylign
+            parsed_response = json.loads(r.text)
+            print(parsed_response['url'])
+            r = requests.get(parsed_response['url'],
+                             headers={"Accept": "application/json"}, timeout=5)
+            skylign_model = json.loads(r.text)
+            for position in skylign_model['height_arr']:
+                # Sum all the heights
+                height = 0
+                for aa in position:
+                    height += float(aa.split(":")[1])
+                self.height_array.append(height)
+                # Now get the heights for each AA group
+                heights = [0, 0, 0, 0, 0, 0, 0, 0]
+                for aa in position:
+                    aa_prob = float(aa.split(":")[1])
+                    aa_name = aa.split(":")[0]
+                    for k in range(len(config['colours'])):
+                        if aa_name in config['colours'][k]['aa']:
+                            heights[k] += aa_prob
+                self.clustal_colours.append(heights)
+
 
         return
 
