@@ -6,27 +6,34 @@ import numpy as np
 import json
 
 class ParsedHMM:
-    """ Represents a parsed HMM file
-
-    This stores representations of HHSuite HMMs.
+    """ 
+    ParsedHMM represents a Hidden Markov Model of sequence alignment. In particular, this class
+    stores representations of HHSuite HMMs and allows some simple calculations on the HMMs.
     """
 
     def __init__(self, config):
-        """ Parse HMM file given in configuration, and load into memory
+        """ 
+        
+        Initialising Parsed HMM checks the configuration for the HMM to load and then
+        parses it into this class.
 
-        :param config: parsed JSON configuration object
+        Parameters
+        ----------
+        config: dict
+            the parsed configuration file - see OutputFigure config argument for details
         """
-        # Define the important parameters as state variable
-        self.hmm_string = ''
-        self.alphabet = []
-        self.states = []
-        self.probs = []
-        self.state_probs = []
-        self.clustal_colours = []
-        self.height_array = []
-        self.ss = ''
-        self.ss_probs = ''
-        self.nulls = []
+
+        # Define the important parameters as object variables
+        self.hmm_string = '' # The string containing only the data part of the HMM (not any headers)
+        self.alphabet = [] # The list of amino acids contained within the MSA alphabet
+        self.states = [] # List of states that each column of MSA can be in (insertion, deletion, etc)
+        self.probs = [] # Probability of each item in the alphabet being at each column
+        self.state_probs = [] # Probability of the self.states (insertion, deletion, etc) at each column
+        self.clustal_colours = [] # List (length of MSA) where each item is a list height of the clustal category heights at that position
+        self.height_array = [] # Total height of each column (in MSA), as given by Shannon entropy
+        self.ss = '' # Secondary structure positions, where len(ss) = len(probs) such that there is one prediction for each column
+        self.ss_probs = '' # Probabilities corresponding to each secondary structure prediction
+        self.nulls = [] # Null/underlying probabilities, each item corresponding the alphabet item at that position
 
         # Process HMM
         print(config['master']['hmm_file'])
@@ -126,13 +133,6 @@ class ParsedHMM:
                             if aa_prob > self.nulls[j]:
                                 heights[k] += aa_prob * height
                 self.clustal_colours.append(heights)
-            #print("Heights:")
-            #print(self.height_array)
-            #print("Max height:")
-            #print(np.amax(self.height_array))
-            #print("Background:")
-            #print(self.nulls)
-            #print(np.sum(self.nulls))
         elif config['output']['conservation_plot']['type'] == 'skylign':
             # Get the HMM file and send it to skylign via post
             print("Making request")
@@ -165,14 +165,20 @@ class ParsedHMM:
                         if aa_name in config['colours'][k]['aa']:
                             heights[k] += aa_prob
                 self.clustal_colours.append(heights)
-
-
         return
 
     def getKullbackLeiblerDistance(self, position):
-        return
+        raise NotImplementedError
 
     def get_shannon_entropy(self, height_idx):
+        """
+        Returns the Shannon entropy of a column in the MSA.
+
+        Parameters
+        ----------
+        height_idx: int
+            the column of the MSA for which to calculate the Shanon entropy
+        """
         position = self.probs[height_idx]
         shannon_entropy = 0
         for i in range(len(position)):

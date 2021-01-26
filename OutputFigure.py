@@ -26,6 +26,23 @@ class OutputFigure:
     parsed_hmm_master = None
 
     def __init__(self, config, add_hits):
+        """
+        Initialising an OutputFigure is the interface through which a figure is generated and saved.
+        This means that unless you are modifying this module, this is the only method which you are
+        likely to need to access.
+
+        Parameters
+        ----------
+        config: dict
+            the configuration dictionary (usually from the loaded JSON data). This is not validated
+            for the fields it contains (or, in most cases, for the value of those fields) and therefore
+            care should be taken with untrusted configurations
+        add_hits: bool
+            this determines whether to just draw the domains and secondary structure for the main protein
+            of interest (if add_hits is False), or whether to retrieve up to config.output.max_hits number
+            of hits to also include (if add_hits is True)
+        """
+        
         # Load the HMM
         self.parsed_hmm_master = ParsedHMM.ParsedHMM(config)
         # Store the config and HMM
