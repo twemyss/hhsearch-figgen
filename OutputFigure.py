@@ -8,6 +8,7 @@ import json
 import ParsedHMM
 import colorsys
 import collections
+import os.path
 from scipy.stats import rankdata
 
 class OutputFigure:
@@ -42,7 +43,7 @@ class OutputFigure:
             of interest (if add_hits is False), or whether to retrieve up to config.output.max_hits number
             of hits to also include (if add_hits is True)
         """
-        
+
         # Load the HMM
         self.parsed_hmm_master = ParsedHMM.ParsedHMM(config)
         # Store the config and HMM
@@ -431,10 +432,29 @@ class OutputFigure:
 
                         self.cr.show_text(name)
                         self.cr.stroke()
+                        # NB we can only use Skylign if their .hmm also has a corresponding a3m file
+                        # -> check if the a3m exists
+                        a3m_file_name = "hmms/" + name + ".fa.hmm.ss.a3m"
+                        if not os.path.isfile(a3m_file_name):
+                            print(f"The a3m file { a3m_file_name } corresponding to the HMM for { name } was not found.")
+                            exit(1)
+                        
                         # Load the HMM
                         hmm = ParsedHMM.ParsedHMM(
-                            {"master": {"name": name, "hmm_file": "hmms/" + name + ".fa.hmm.ss.hmm"},
-                             "colours": self.config['colours']})
+                            {
+                                "master": {
+                                    "name": name,
+                                    "hmm_file": "hmms/" + name + ".fa.hmm.ss.hmm",
+                                    "alignment_a3m": a3m_file_name
+                                    },
+                                "colours": self.config['colours'],
+                                "output": {
+                                    "conservation_plot": {
+                                        "type": self.config['output']['conservation_plot']['type']
+                                    }
+                                }
+                            })
+                        # Do some debug printing
                         print(name)
                         print(hmm.length)
                         # Plot either logo or 2ndary structure
@@ -448,8 +468,6 @@ class OutputFigure:
                             self.draw_ss(hmm, self.padding_top + 195 + spacing * current_idx, self.padding_left + start - hit_start, hit_start, hit_end, og_ends_at)
                         elif self.config['output']['subplot_type'] == "psiplot":
                             self.bar_ss(hmm, self.padding_top + 195 + spacing * current_idx, self.padding_left + start - hit_start, hit_start, hit_end, og_ends_at)
-
-
 
     def bar_ss(self, hmm, pos_y, pos_x, hit_start, hit_end, right_cutoff=100000):
         # (self, scale, max_bitscore, position, offset_horizontal, draw_full_rectangle, hmm):
