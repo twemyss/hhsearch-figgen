@@ -1,23 +1,27 @@
 #!/usr/bin/env python
-
 import sys
 import json
 import ParsedHMM
-import OutputFigure
+from OutputFigure import OutputFigure
+from argparse import ArgumentParser
 
-# Check the arguments specified to the program
-if len(sys.argv) is not 2:
-    print("Invalid arguments. You must specify a configuration file as an argument to the program.")
-    print("Usage: python hhsearch-figgen.py [config.json file]")
-    sys.exit(1)
+if __name__ == "__main__":
+    """
+    Main command line interface for the software. This uses argparse to validate the arguments
+    and pass them to the figure generation script. It requires a configuration JSON file that
+    contains details of the hits, regions to include, and the secondary structure data. An example
+    of this can be seen in test-data/kkt17.json.
+    """
 
-# Load the configuration
-with open(sys.argv[1]) as json_file:
-    config = json.load(json_file)
+    # Use argparse to parse the arguments
+    parser = ArgumentParser(description="Generate plots of hhsearch results and secondary structure data")
+    parser.add_argument('config', help="The path to the JSON configuration file. See test-data/kkt17.json for an example.")
+    arguments= parser.parse_args()
 
-# Load the HMM of the target sequence, and extract the length
+    # Load the configuration
+    with open(arguments.config) as json_file:
+        config = json.load(json_file)
 
-
-# Generate the output figure
-output_figure = OutputFigure.OutputFigure(config)
+    # Generate the output figure
+    output_figure = OutputFigure(config, True)
 

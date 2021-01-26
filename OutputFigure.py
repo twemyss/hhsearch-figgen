@@ -11,9 +11,11 @@ import collections
 from scipy.stats import rankdata
 
 class OutputFigure:
-    """ Set of utilities for producing output figure
-
-    Uses Cairo to generate a PDF figure with the name specified in the configuration.
+    """
+    
+    OutputFigure is a class which generates output figures from a configuration file.
+    It stores data on the configuration, HMMs and page layout internally, and saves
+    them to a file when requested.
 
     """
 

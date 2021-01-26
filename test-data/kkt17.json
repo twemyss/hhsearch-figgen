@@ -33,7 +33,7 @@
   },
   "output": {
     "file_name": "kkt17.pdf",
-    "max_hits": 30,
+    "max_hits": 3,
     "split": false,
     "split_at": 500,
     "subplot_type": "psiplot",
