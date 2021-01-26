@@ -123,8 +123,10 @@ class ParsedHMM:
                 height = entropy
                 self.height_array.append(height)
             for aa_idx in range(len(self.probs)):
+                # Get the total height for that position in the MSA
                 height = self.height_array[aa_idx]
-                heights = [0, 0, 0, 0, 0, 0, 0, 0]
+                # Start with a zero for the height of each colour at that position
+                heights = [0 for colour in range(len(config['colours']))]
                 for j in range(len(self.probs[aa_idx])):
                     aa_prob = self.probs[aa_idx][j]
                     aa_name = self.alphabet[j]
